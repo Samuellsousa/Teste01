@@ -5,32 +5,41 @@ on:
       branches: [ "master" ]
 
 jobs:
-  check-dist:
+  build:
+
     runs-on: ubuntu-latest
-    
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x, 18.x]
+        
+
     steps:
     - uses: actions/checkout@v3
     
-    - name: Set Node.js 16.x
+    - name: install Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
-      
-    - name: Install dependecies
-      run: npm ci
-    
-    - name: Build    
-      run: npm run build --if-present
-    
-    - name: Run tests
-      run: npm run test
-      
-    - name: Lint
-      run: npx eslint src/**/*.ts
-      
-    - name: Run ts-prune  
-      run: npm run find-deadcode
-      
-    
-      
+            node-version: ${{ matrix.node-version }}
+            cache: 'npm'
+        
+            - name: Install dependecies
+            
+              run: npm ci
+
+            - name: Build    
+              run: npm run build --if-present
+
+            - name: Run tests
+              run: npm run test
+
+            - name: Lint
+              run: npx eslint src/**/*.ts
+
+            - name: Run ts-prune  
+              run: npm run find-deadcode
+
+
+
    
         
